@@ -4,8 +4,7 @@ import keras
 import ruptures as rpt
 from collections import Counter
 from sklearn.cluster import KMeans
-
-
+import os 
 
 def read_fovs(nfov, dir_data):
   fovs_trajs = []
@@ -150,6 +149,9 @@ def pred_trajs_fov(nfov, dir_pred, dir_data, unet_alpha, unet_ks, unet_states):
     if states_stats[1][1] > 1000:
       ch_mode = 1
 
+  if not os.path.exists(dir_pred):
+        os.makedirs(dir_pred)
+
   for img, fov in fovs_id.items():
     submission_file = dir_pred + f'/fov_{fov}.txt'
     if preb == fov:
@@ -257,18 +259,18 @@ def pred_trajs_fov(nfov, dir_pred, dir_data, unet_alpha, unet_ks, unet_states):
     np.savetxt(f, data, delimiter = ';')
 
 
-unet = keras.models.load_model("/content/drive/My Drive/unet_v1.1.keras", compile=False)
-unet_alpha = keras.models.load_model("/content/drive/MyDrive/att_unet/alphas-3-2-1024-v5-epoch-2.keras", compile=False)
-unet_ks = keras.models.load_model(f"/content/drive/MyDrive/att_unet/ks-3-2-512-v3-epoch-1.keras", compile=False)
-unet_states = keras.models.load_model(f"/content/drive/MyDrive/att_unet/states-3-6-128-v1-epoch-10.keras", compile=False)
+unet = keras.models.load_model("/models/unet_v1.1.keras", compile=False) #CHANGE DIRECTORY
+unet_alpha = keras.models.load_model("/models/alphas-3-2-1024-v5-epoch-2.keras", compile=False) #CHANGE DIRECTORY
+unet_ks = keras.models.load_model(f"/models/ks-3-2-512-v3-epoch-1.keras", compile=False) #CHANGE DIRECTORY
+unet_states = keras.models.load_model(f"/models/states-3-6-128-v1-epoch-10.keras", compile=False) #CHANGE DIRECTORY
 
 experiments = 11 #Introduce the number of experiments
 no_fovs = 30 #Introduce the number of fovs
 
 for exp in range(int(experiments)):
   print("Pred. file ", exp)
-  dir_data = rf"/content/drive/MyDrive/public_data_challenge_v0/track_2/exp_{exp}/" #Files directory
-  dir_pred = rf"/content/drive/MyDrive/Model_015/track_2/exp_{exp}" #Predictions directory
+  dir_data = rf"/data/track_2/exp_{exp}/" #CHANGE DIRECTORY
+  dir_pred = rf"/data/track_2/exp_{exp}" #CHANGE DIRECTORY
   pred_trajs_fov(int(no_fovs), dir_pred, dir_data, unet_alpha, unet_ks, unet_states)
 
 
