@@ -1,0 +1,9 @@
+scikit-learn
+numpy
+ruptures
+collections
+scipy
+andi-datasets
+trackpy
+pandas
+keras
