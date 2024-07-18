@@ -8,6 +8,7 @@ import trackpy as tp
 import pandas as pd
 from scipy.optimize import linear_sum_assignment
 import keras
+import os
 
 
 def expand_borders(v, fm=False):
@@ -187,6 +188,9 @@ def pred_trajs_fov_video(nfov, dir_pred, dir_data, unet_alpha, unet_ks, unet_sta
     if states_stats[1][1] > 200:
       ch_mode = 1
 
+  if not os.path.exists(dir_pred):
+        os.makedirs(dir_pred)
+      
   for fov in range(nfov):
     submission_file = dir_pred + f'/fov_{fov}.txt'
     with open(submission_file, "w") as f:
@@ -312,14 +316,14 @@ def solve_missing_particles(pred_dir, data_dir, fovs):
             f.write(formatted_numbers + '\n')
 
 
-unet_alpha = keras.models.load_model("/content/drive/MyDrive/att_unet/alphas-3-2-1024-v5-epoch-2.keras", compile=False)
-unet_ks = keras.models.load_model(f"/content/drive/MyDrive/att_unet/ks-3-2-1024-newdata-epoch-3.keras", compile=False)
-unet_states = keras.models.load_model(f"/content/drive/MyDrive/att_unet/states-3-6-128-v1-epoch-10.keras", compile=False)
+unet_alpha = keras.models.load_model("/models/alphas-3-2-1024-v5-epoch-2.keras", compile=False) #CHANGE DIRECTORY
+unet_ks = keras.models.load_model(f"/models/ks-3-2-1024-newdata-epoch-3.keras", compile=False) #CHANGE DIRECTORY
+unet_states = keras.models.load_model(f"/models/states-3-6-128-v1-epoch-10.keras", compile=False) #CHANGE DIRECTORY
 
 for exp in range(12):
   print("Pred. file ", exp)
-  dir_data = rf"/content/drive/MyDrive/public_data_challenge_v0/track_1/exp_{exp}/"
-  dir_pred = rf"/content/drive/MyDrive/Model_015/track_1/exp_{exp}"
+  dir_data = rf"/data/public_data_challenge_v0/track_1/exp_{exp}/"  #CHANGE DIRECTORY
+  dir_pred = rf"/data/track_1/exp_{exp}"  #CHANGE DIRECTORY
   pred_trajs_fov_video(30, dir_pred, dir_data, unet_alpha, unet_ks, unet_states)
   solve_missing_particles(dir_pred, dir_data, 30)
 
