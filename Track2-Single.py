@@ -3,6 +3,7 @@ import pandas as pd
 import keras
 import ruptures as rpt
 from collections import Counter
+import os
 
 
 def read_fovs(nfov, dir_data):
@@ -131,7 +132,10 @@ def pred_trajs_fov(nfov, dir_pred, dir_data, unet, unet_alpha, unet_ks, unet_sta
 
   states_stats = np.unique(pred_states, return_counts=True)
   ch_mode = 0
-
+  
+  if not os.path.exists(dir_pred):
+      os.makedirs(dir_pred)
+    
   if len(states_stats[1]) == 3:
     if states_stats[1][1] > 1000:
       ch_mode = 1
@@ -142,6 +146,8 @@ def pred_trajs_fov(nfov, dir_pred, dir_data, unet, unet_alpha, unet_ks, unet_sta
       val_text = "a"
     else:
       val_text = "w"
+
+
 
     preb = fov
     add_ind = fovs_ind[img]
