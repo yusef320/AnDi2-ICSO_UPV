@@ -6,4 +6,4 @@ scipy
 andi-datasets
 trackpy
 pandas
-keras
+tensorflow==2.15
